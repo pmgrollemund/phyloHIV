@@ -1,3 +1,42 @@
+############ ---- check_HXB2 ---- ############
+#' @title check_HXB2
+#' @description Script for:
+#' @return dqsfds
+#' @param name_file XXXX
+#' @param name_HXB2_file XXXX
+#' @param index XXXX
+#' @param verbose XXXX
+#' @export
+check_HXB2 <- function(name_file,name_HXB2_file,
+                       index=NA,
+                       verbose=TRUE){
+ if(verbose) cat("Check that HXB2 is in each file.\n")
+
+ ### Which files ?
+ if(!is.na(index)){
+  name_file <- name_file[index]
+ }
+
+ for(name in name_file){
+  ### Load data
+  seq  <- ape::read.dna(name,format="fa")
+  HXB2 <- ape::read.dna(name_HXB2_file,format="fa")
+
+  ### Check and add HXB2 if necessary
+  name_HXB2 <- rownames(HXB2)
+  if(name_HXB2 %in% names(seq)){
+   if(verbose) cat("\t",basename(name)," already contains HXB2.\n",sep="")
+  }else{
+   if(verbose) cat("\tAdd HXB2 into the file ",basename(name),"\n",sep="")
+   name_tmp <- gsub(x=name,".fasta","_tmp.fasta")
+
+   cmd <- paste("cat ",name_HXB2_file," ",name," > ",name_tmp,"\n ",sep="")
+   cmd <- paste(cmd,"rm ",name,"\n ",sep="")
+   cmd <- paste(cmd,"mv ",name_tmp," ",name,"\n",sep="")
+   system(cmd)
+  }
+ }
+}
 ############ ---- extract_HXB2 ---- ############
 #' @title extract_HXB2
 #' @description Extract the HXB2 sequence from a LANL dataset.

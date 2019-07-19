@@ -11,3 +11,5 @@ Encoding: UTF-8
 LazyData: true
 Imports: big.phylo, ape, data.table, utils, phangorn, ggplot2
 RoxygenNote: 6.1.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr

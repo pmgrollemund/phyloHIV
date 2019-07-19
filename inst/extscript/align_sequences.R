@@ -6,7 +6,7 @@ require(phyloHIV)
 require(big.phylo)
 
 args <- commandArgs(trailingOnly=TRUE)
-# args <- c("inst/align_options.json")
+# args <- c("inst/extjson/align_options.json")
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -28,12 +28,16 @@ if(length(args) == 2){
 package_name <- "phyloHIV"
 
 ### Load internal options ----
-json_data <- fromJSON(file=system.file(package=package_name,"internal_options.json"))
+json_data <- fromJSON(file=system.file(package=package_name,"extjson","internal_options.json"))
 for(i in 1:length(json_data)){
  assign(names(json_data)[i], json_data[[i]])
 }
 
 ### Define names and paths ----
+path_sequences_meta <- paste(system.file(package=package_name,"extdata"),"/",path_sequences_meta,sep="")
+path_LANL_seq <- paste(system.file(package=package_name,"extdata"),"/",path_LANL_seq,sep="")
+path_seq <- paste(system.file(package=package_name,"extdata"),"/",path_seq,sep="")
+
 LANL_seq  <- paste(path_LANL_seq,LANL_seq_names,sep="")
 LANL_db <- paste(path_LANL_seq,
                  gsub(x=LANL_seq_names,
@@ -42,7 +46,7 @@ LANL_db <- paste(path_LANL_seq,
 
 seq <- paste(path_seq,seq_names,sep="")
 
-name_HXB2_file <- system.file(package=package_name,"HXB2.fasta")
+name_HXB2_file <- system.file(package=package_name,"extdata","HXB2.fasta")
 
 ########################################################################### ----
 ##################### Get the closest sequences ################################
