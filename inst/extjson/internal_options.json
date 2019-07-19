@@ -1,0 +1,45 @@
+{
+  "verbose": true,
+
+  "nbre_close": 20,
+  "max_closest": 80,
+  "min_percent": 85,
+  "outgroup_size": 5,
+
+
+  "aligner": "mafft",
+  "thread": 5,
+
+  "dna_region": "PR/RT",
+  "nbre_col_rm_strip": 25,
+  "name_HXB2": [
+               "B.FR.1983.HXB2-LAI-IIIB-BRU.K03455.M",
+               "B.FR.1983.HXB2_copy_LAI.AF033819.M"
+               ],
+
+  "tree_builder": "fasttree",
+  "local_indicator": "PR/RT",
+  "focus_indicator": true,
+  "separator": "___",
+  "negative": "non",
+  "blacklist_paths": null,
+  "blacklist_names": null,
+  "Unknown": "Unknown",
+  "local_tip_split": "-",
+  "external_tip_split": "[.]",
+  "local_index_location": 8,
+  "external_index_location": 2,
+
+  "opt_regex": "([[:alpha:]]+)___.*",
+  "vars_for_label": [
+                    "kc_case",
+                    "main_race",
+                    "main_birthCountry",
+                    "main_transm",
+                    "sex",
+                    "hivyr"
+                    ],
+  "focus_subgroup": null,
+  "index_subgroup": null,
+  "name_subgroup": null,
+}

@@ -1,0 +1,12 @@
+{
+  "path_file_aligned": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/Closest/",
+  "names_file_aligned": [
+                        "newseq_LANL_Subtype_01_AE_mafft_aligned_ndrm.fasta",
+                        "newseq_LANL_Subtype_A1_mafft_aligned_ndrm.fasta",
+                        "newseq_LANL_Subtype_B_mafft_aligned_ndrm.fasta",
+                        "newseq_LANL_Subtype_C_mafft_aligned_ndrm.fasta"
+                        ],
+  "path_output": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/Tree/",
+  "bs.n": 2,
+  "verbose": true
+}

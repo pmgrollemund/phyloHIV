@@ -1,0 +1,26 @@
+{
+  "path_sequences_meta": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/FakeData/sequences_meta.rds",
+  "path_LANL_seq": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/LANL/", 
+  "LANL_seq_names": [ 
+                    "LANL_Subtype_01_AE_stripped.fasta", 
+                    "LANL_Subtype_A1_stripped.fasta", 
+                    "LANL_Subtype_B_stripped.fasta", 
+                    "LANL_Subtype_C_stripped.fasta"
+                    ],
+  "path_seq": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/Subtype/",  
+  "seq_names": [ 
+               "newseq_Subtype_01_AE.fasta", 
+               "newseq_Subtype_A1.fasta", 
+               "newseq_Subtype_B.fasta", 
+               "newseq_Subtype_C.fasta"
+               ],
+  "path_output": "/home/paul/Documents/Postdoc/HIV_transmission/Synthese/Data_Example/Closest/",
+  "output_names": [ 
+                  "newseq_LANL_Subtype_01_AE", 
+                  "newseq_LANL_Subtype_A1", 
+                  "newseq_LANL_Subtype_B", 
+                  "newseq_LANL_Subtype_C"
+                  ],
+  "subtypes": ["01_AE","A1","B","C"], 
+  "verbose": true
+}
