@@ -217,14 +217,14 @@ tips_relabelling.internal <- function(tree,person,sequences_meta,vars_for_label,
 #' @title wrap_phyloscanner_analyse_tree
 #' @description Script for:
 #' @return dqsfds
-#' @param tree_names XXXX
+#' @param renamed_tree_names XXXX
 #' @param path_output XXXX
 #' @param opt_regex XXXX
 #' @param bs.n XXXX
 #' @param bs.id XXXX
 #' @param verbose XXX
 #' @export
-wrap_phyloscanner_analyse_tree <- function(tree_names,path_output,
+wrap_phyloscanner_analyse_tree <- function(renamed_tree_names,path_output,
                                            opt_regex="([[:alpha:]]+)___.*",
                                            bs.n = 50,bs.id = NA,
                                            verbose =TRUE){
@@ -233,8 +233,8 @@ wrap_phyloscanner_analyse_tree <- function(tree_names,path_output,
  if(!dir.exists(path_output))
   dir.create(path_output)
 
- for(i in 1:length(tree_names)){
-  name_tree <- tree_names[i]
+ for(i in 1:length(renamed_tree_names)){
+  name_tree <- renamed_tree_names[i]
   if(verbose) cat("\tFile:  ",basename(name_tree),"\n",sep="")
 
   path_res <- paste(path_output,gsub(x=basename(name_tree),".newick",""),sep="")
@@ -288,20 +288,21 @@ wrap_phyloscanner_analyse_tree <- function(tree_names,path_output,
 #' @title phyloscanner_postprocess
 #' @description Script for:
 #' @return dqsfds
-#' @param tree_names XXXX
+#' @param renamed_tree_names XXXX
 #' @param path_output XXXX
 #' @param focus_group XXXX
+#' @param separator XXXX
 #' @param bs.n XXXX
 #' @param bs.id XXXX
 #' @param verbose XXX
 #' @export
-phyloscanner_postprocess <- function(tree_names,path_output,
-                                     focus_group,
+phyloscanner_postprocess <- function(renamed_tree_names,path_output,
+                                     focus_group,separator,
                                      bs.n=50,bs.id=NA,
                                      verbose=TRUE){
  if(verbose) cat("Postprocess the colored trees.\n")
- for(i in 1:length(tree_names)){
-  name_tree <- tree_names[i]
+ for(i in 1:length(renamed_tree_names)){
+  name_tree <- renamed_tree_names[i]
   if(verbose) cat("\tFile:  ",basename(name_tree),"\n",sep="")
 
   path_res <- paste(path_output,gsub(x=basename(name_tree),".newick",""),sep="")
@@ -345,6 +346,11 @@ phyloscanner_postprocess <- function(tree_names,path_output,
    # Some fixes
    tmp <- as.character(attributes(tree)$BRANCH_COLOURS)
    tmp[is.na(tmp)] <- 'Unknown'
+
+   unk_indexes <- which(tmp[1:length(tree$tip.label)] == "Unknown")
+   tip_states <- unlist(lapply(strsplit(tree$tip.label,split=separator),function(v) v[1]))[unk_indexes]
+   tmp[unk_indexes] <- tip_states
+
    index_focus_group <- grep(x=tree$tip.label,paste("^",focus_group,sep=""))
    tmp[index_focus_group] <- focus_group
    trait <- data.frame(BRANCH_COLOURS = tmp,
@@ -375,7 +381,7 @@ phyloscanner_postprocess <- function(tree_names,path_output,
 #' @title clades_extracting
 #' @description Script for:
 #' @return dqsfds
-#' @param tree_names XXXX
+#' @param renamed_tree_names XXXX
 #' @param path_colored_tree XXXX
 #' @param path_output XXXX
 #' @param focus_group XXXX
@@ -383,7 +389,7 @@ phyloscanner_postprocess <- function(tree_names,path_output,
 #' @param bs.id XXXX
 #' @param verbose XXX
 #' @export
-clades_extracting <- function(tree_names,
+clades_extracting <- function(renamed_tree_names,
                               path_colored_tree,path_output,
                               focus_group,
                               bs.n=50,bs.id=NA,
@@ -404,8 +410,8 @@ clades_extracting <- function(tree_names,
  for(bs.id in bs.id_index){
   clades <- list()
 
-  for(i in 1:length(tree_names)){
-   name_tree <- tree_names[i]
+  for(i in 1:length(renamed_tree_names)){
+   name_tree <- renamed_tree_names[i]
 
    if(bs.id!=0){
     name_tree <- gsub(x= name_tree,
@@ -414,7 +420,7 @@ clades_extracting <- function(tree_names,
    }
 
    name_MRCA_file <- paste(path_colored_tree,
-                           gsub(x=basename(tree_names[i]),
+                           gsub(x=basename(renamed_tree_names[i]),
                                 pattern=".newick",
                                 replacement=""),
                            "/",
@@ -435,7 +441,7 @@ clades_extracting <- function(tree_names,
    #### Load the tree, trait and MRCA
    tree <- ape::read.tree(name_tree)
    trait <- utils::read.csv(paste(path_colored_tree,
-                                  gsub(x=basename(tree_names[i]),
+                                  gsub(x=basename(renamed_tree_names[i]),
                                        pattern=".newick",
                                        replacement=""),
                                   "/",
@@ -450,10 +456,10 @@ clades_extracting <- function(tree_names,
 
     if(length(MRCA)>0){
      ### MRCA correction
-     MRCA <- MRCA_correction(tree,trait,MRCA,focus_group)
+     # MRCA <- MRCA_correction(tree,trait,MRCA,focus_group)
 
      #### Clades extracting
-     tmp_clades <- wrap_extract.clades(tree,trait,MRCA) # see the function in XXXX
+     tmp_clades <- wrap_extract.clades(tree,trait,MRCA,focus_group) # see the function in XXXX
      names(tmp_clades) <- rep(basename(name_tree),length(tmp_clades)) # The names of the list items are the subtypes
      clades <- c(clades,tmp_clades)
     }
@@ -504,8 +510,9 @@ MRCA_correction <- function(tree,traits,MRCAs,state){
 #' @param tree XXXX
 #' @param traits XXXX
 #' @param MRCAs XXXX
+#' @param focus_group XXXX
 #' @export
-wrap_extract.clades <- function(tree,traits,MRCAs)
+wrap_extract.clades <- function(tree,traits,MRCAs,focus_group)
 {
  tree$node.label <- traits$BRANCH_COLOURS[1:length(tree$node.label) + length(tree$tip.label)]
 
@@ -517,18 +524,27 @@ wrap_extract.clades <- function(tree,traits,MRCAs)
    if(MRCAs[i] > length(tree$tip.label)){
     clade_tmp <- ape::extract.clade(tree,MRCAs[i])
 
-    clade_anc <- phangorn::Ancestors(tree,MRCAs[i])[1]
-    clade_tmp$source_location <- tree$node.label[clade_anc-length(tree$tip.label)]
-    clade_tmp$source_location[is.na(clade_tmp$source_location)] <- "Unknown"
-    if(length(clade_tmp$source_location) > 0){
-     if(clade_tmp$source_location == "Unknown"){
-      trait_ancs <- tree$node.label[phangorn::Ancestors(tree,MRCAs[i])-length(tree$tip.label)]
-      first_anc_trait <- which(trait_ancs != 'Unknown')[1]
-      if(!is.na(first_anc_trait))
-       clade_tmp$source_location <- trait_ancs[first_anc_trait]
-     }
+    subtree_indexes <- prop.part(tree)[[MRCAs[i] - length(tree$tip.label)]]
+    non_focus_tips <- which(traits$INDIVIDUAL[subtree_indexes] != focus_group)
+    if(length(non_focus_tips) > 0){
+     oldw <- getOption("warn")
+     options(warn=-1)
+     clade_tmp <- drop.tip(clade_tmp,tip=non_focus_tips,)
+     options(warn=oldw)
     }
-    clade_tmp$length_root <- tree$edge.length[clade_anc]
+
+    # clade_anc <- phangorn::Ancestors(tree,MRCAs[i])[1]
+    # clade_tmp$source_location <- tree$node.label[clade_anc-length(tree$tip.label)]
+    # clade_tmp$source_location[is.na(clade_tmp$source_location)] <- "Unknown"
+    # if(length(clade_tmp$source_location) > 0){
+    #  if(clade_tmp$source_location == "Unknown"){
+    #   trait_ancs <- tree$node.label[phangorn::Ancestors(tree,MRCAs[i])-length(tree$tip.label)]
+    #   first_anc_trait <- which(trait_ancs != 'Unknown')[1]
+    #   if(!is.na(first_anc_trait))
+    #    clade_tmp$source_location <- trait_ancs[first_anc_trait]
+    #  }
+    # }
+    # clade_tmp$length_root <- tree$edge.length[clade_anc]
 
     clades <- c(clades,list(clade_tmp))
    }else{
@@ -542,19 +558,19 @@ wrap_extract.clades <- function(tree,traits,MRCAs)
   other_tips <- (1:length(tree$tip.label))[-i]
   clade_tmp <- ape::drop.tip(tree,tip=other_tips)
 
-  clade_anc <- phangorn::Ancestors(tree,i)[1]
-  clade_tmp$source_location <- tree$node.label[clade_anc-length(tree$tip.label)]
-  clade_tmp$source_location[is.na(clade_tmp$source_location)] <- "Unknown"
-
-  if(length(clade_tmp$source_location) > 0){
-   if(clade_tmp$source_location == "Unknown"){
-    trait_ancs <- tree$node.label[phangorn::Ancestors(tree,i)-length(tree$tip.label)]
-    first_anc_trait <- which(trait_ancs != 'Unknown')[1]
-    if(!is.na(first_anc_trait))
-     clade_tmp$source_location <- trait_ancs[first_anc_trait]
-   }
-  }
-  clade_tmp$length_root <- tree$edge.length[clade_anc]
+  # clade_anc <- phangorn::Ancestors(tree,i)[1]
+  # clade_tmp$source_location <- tree$node.label[clade_anc-length(tree$tip.label)]
+  # clade_tmp$source_location[is.na(clade_tmp$source_location)] <- "Unknown"
+  #
+  # if(length(clade_tmp$source_location) > 0){
+  #  if(clade_tmp$source_location == "Unknown"){
+  #   trait_ancs <- tree$node.label[phangorn::Ancestors(tree,i)-length(tree$tip.label)]
+  #   first_anc_trait <- which(trait_ancs != 'Unknown')[1]
+  #   if(!is.na(first_anc_trait))
+  #    clade_tmp$source_location <- trait_ancs[first_anc_trait]
+  #  }
+  # }
+  # clade_tmp$length_root <- tree$edge.length[clade_anc]
 
   clades <- c(clades,list(clade_tmp))
  }

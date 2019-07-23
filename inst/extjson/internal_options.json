@@ -1,5 +1,4 @@
 {
-  "verbose": true,
 
   "nbre_close": 20,
   "max_closest": 80,

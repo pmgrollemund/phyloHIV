@@ -4,10 +4,10 @@
 \alias{makeblastdb}
 \title{makeblastdb}
 \usage{
-makeblastdb(seq_file, output_file, index = NA, verbose = T)
+makeblastdb(LANL_seq, output_file, index = NA, verbose = T)
 }
 \arguments{
-\item{seq_file}{XXXX}
+\item{LANL_seq}{XXXX}
 
 \item{output_file}{XXXX}
 

@@ -15,6 +15,7 @@ building_tree <- function(names_file_aligned_ndrm,path_output,
                           verbose=TRUE){
  if(!dir.exists(path_output))
   dir.create(path_output)
+ path_output <- paste(normalizePath(path_output),"/",sep="")
 
  if(verbose) cat("Building trees with ",tree_builder,".\n",sep="")
  for(i in 1:length(names_file_aligned_ndrm)){

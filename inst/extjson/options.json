@@ -1,0 +1,44 @@
+{
+ "job_index": "NA",
+ "path_RDS": "./extdata/FakeData/",
+ "RDS_names": [
+              "sequences_meta_modified.rds",
+              "person_modified.rds",
+              "Country_db.rds"
+              ],
+
+
+ "path_LANL_seq": "./extdata/LANL/",
+ "LANL_seq_names": [
+  "LANL_Subtype_01_AE.fasta",
+  "LANL_Subtype_A1.fasta"
+  ],
+ "path_local_seq": "./extdata/Local/",
+ "local_seq_names": [
+  "newseq_Subtype_01_AE.fasta",
+  "newseq_Subtype_A1.fasta"
+  ],
+
+
+ "path_aligned": "./extdata/Align/",
+ "seq_names": [
+  "newseq_LANL_Subtype_01_AE",
+  "newseq_LANL_Subtype_A1"
+  ],
+
+
+ "path_tree": "./extdata/Tree/",
+ "tree_names": [
+               "newseq_LANL_Subtype_01_AE_mafft_aligned_ndrm",
+               "newseq_LANL_Subtype_A1_mafft_aligned_ndrm"
+               ],
+ "path_colored_tree":"./extdata/Colored_tree/",
+ "path_clades":"./extdata/Clades/",
+
+
+ "local_group": "WA",
+ "focus_group": "KC",
+ "bs.n": 2,
+ "subtypes": ["01_AE","A1"],
+ "verbose": true
+}

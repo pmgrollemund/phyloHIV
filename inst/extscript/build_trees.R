@@ -5,9 +5,9 @@ require(rjson)
 require(phyloHIV)
 require(big.phylo)
 
-# args <- c("inst/tree_options.json",1)
-
-args = commandArgs(trailingOnly=TRUE)
+# args <- commandArgs(trailingOnly=TRUE)
+# args <- c("./extjson/options.json")
+args <- c("./json/options.json")
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -17,34 +17,28 @@ if(length(args)>0){
  }
 }
 
-if(length(args) > 1){
- index <- as.numeric(args[2])
-}else{
- index <- NA
-}
-
 ########################################################################### ----
 ##################### Initialization ###########################################
 ########################################################################### ----
 package_name <- "phyloHIV"
 
 ### Load internal options ----
-json_data <- fromJSON(file=system.file(package=package_name,"internal_options.json"))
+json_data <- fromJSON(file=system.file(package=package_name,"extjson","internal_options.json"))
 for(i in 1:length(json_data)){
  assign(names(json_data)[i], json_data[[i]])
 }
 
 ### Define names and paths ----
-names_file_aligned_ndrm <- paste(path_file_aligned,names_file_aligned,sep="")
-path_outgroup <- paste(path_file_aligned,"outgroup.rda",sep="")
+names_file_aligned_ndrm <- paste(normalizePath(path_aligned),"/",tree_names,".fasta",sep="")
+path_outgroup <- paste(normalizePath(path_aligned),"/","outgroup.rda",sep="")
 
 ### Which file to treat ----
 all_file_bs <- expand.grid(names_file_aligned_ndrm,1:bs.n)
 names(all_file_bs) <- c("name","bs.id")
 
-if(!is.na(index)){
- names_file_aligned_ndrm <- as.character(all_file_bs[index,1])
- bs.id <- as.numeric(all_file_bs[index,2])
+if(!is.na(job_index) && job_index != "NA"){
+ names_file_aligned_ndrm <- as.character(all_file_bs[job_index,1])
+ bs.id <- as.numeric(all_file_bs[job_index,2])
 }else{
  bs.id <- NA
 }
@@ -53,14 +47,15 @@ if(!is.na(index)){
 ##################### Build the trees ##########################################
 ########################################################################### ----
 ### Building trees ----
-building_tree(names_file_aligned_ndrm,path_output,
+building_tree(names_file_aligned_ndrm,path_tree,
               tree_builder,
               bs.n,bs.id,
               verbose)
+path_tree <- paste(normalizePath(path_tree),"/",sep="")
 
 ### Postprocess trees (rooting and remove outgroup sequences) ----
 tree_names <-
- paste(path_output,"fasttree_",gsub(x=basename(names_file_aligned_ndrm),".fasta","/"),
+ paste(path_tree,"fasttree_",gsub(x=basename(names_file_aligned_ndrm),".fasta","/"),
        gsub(x=basename(names_file_aligned_ndrm),".fasta",".newick"),sep='')
 
 postprocess_tree(tree_names,path_outgroup,name_HXB2,

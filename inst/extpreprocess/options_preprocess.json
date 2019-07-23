@@ -1,0 +1,16 @@
+{
+ "path_RDS": "/home/paul/Documents/Postdoc/HIV_transmission/Data/Seattle/Analysis/Appli_package/Data/",
+ "RDS_names": [
+              "sequences_meta.rds",
+              "person.rds",
+              "Country_db.rds"
+              ],
+
+ "path_LANL_seq": "/home/paul/Documents/Postdoc/HIV_transmission/Data/Seattle/Analysis/Appli_package/LANL/",
+ "LANL_seq_names": [
+  "LANL_Subtype_C.fasta"
+  ],
+
+  "name_length": 6,
+  "min_occur": 10
+}

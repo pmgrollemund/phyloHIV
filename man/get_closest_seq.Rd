@@ -4,14 +4,14 @@
 \alias{get_closest_seq}
 \title{get_closest_seq}
 \usage{
-get_closest_seq(LANL_seq, seq, path_output, output_names, max_closest,
-  nbre_close = NULL, min_percent, name_HXB2_file = NULL, index = NA,
-  verbose = TRUE)
+get_closest_seq(LANL_seq, Local_seq, path_output, output_names,
+  max_closest, nbre_close = NULL, min_percent, name_HXB2_file = NULL,
+  index = NA, verbose = TRUE)
 }
 \arguments{
 \item{LANL_seq}{XXXX}
 
-\item{seq}{XXXX}
+\item{Local_seq}{XXXX}
 
 \item{path_output}{XXXX}
 

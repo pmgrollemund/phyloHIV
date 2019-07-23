@@ -4,7 +4,7 @@
 \alias{wrap_extract.clades}
 \title{extract.clades_wrap}
 \usage{
-wrap_extract.clades(tree, traits, MRCAs)
+wrap_extract.clades(tree, traits, MRCAs, focus_group)
 }
 \arguments{
 \item{tree}{XXXX}
@@ -12,6 +12,8 @@ wrap_extract.clades(tree, traits, MRCAs)
 \item{traits}{XXXX}
 
 \item{MRCAs}{XXXX}
+
+\item{focus_group}{XXXX}
 }
 \value{
 dqsfds

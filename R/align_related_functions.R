@@ -2,33 +2,34 @@
 #' @title makeblastdb
 #' @description Script for:
 #' @return dqsfds
-#' @param seq_file XXXX
+#' @param LANL_seq XXXX
 #' @param output_file XXXX
 #' @param index XXX
 #' @param verbose XXXX
 #' @export
-makeblastdb <- function(seq_file,output_file,
+makeblastdb <- function(LANL_seq,output_file,
                         index=NA,
                         verbose=T
 ){
+ if(index == "NA") index <- NA
 
  ### Stop if wrong args
- stopifnot( length(seq_file) == length(output_file) )
+ stopifnot( length(LANL_seq) == length(output_file) )
 
  ### Which files ?
  if(is.na(index)){
-  index <- 1:length(seq_file)
+  index <- 1:length(LANL_seq)
  }
 
  ### For each item
  if(verbose) cat("Make a Blast database.\n")
  for(i in index){
-  if(i > length(seq_file)){
+  if(i > length(LANL_seq)){
    warning("The index job is too large.\n")
   }else{
-   if(verbose) cat(paste("\t",seq_file[i],".\n",sep=""))
-   cmd <- paste("makeblastdb -in ",seq_file[i]," ",
-                "-dbtype nucl -title ",gsub(".fasta","",basename(seq_file[i]))," ",
+   if(verbose) cat(paste("\t",LANL_seq[i],".\n",sep=""))
+   cmd <- paste("makeblastdb -in ",LANL_seq[i]," ",
+                "-dbtype nucl -title ",gsub(".fasta","",basename(LANL_seq[i]))," ",
                 "-out ",output_file[i],sep="")
 
    system(command=cmd,ignore.stdout=T)
@@ -50,6 +51,8 @@ blastn <- function(names_seq,names_db,
                    index=NA,
                    verbose=TRUE
 ){
+ if(index == "NA") index <- NA
+
  ### Stop if wrong args
  stopifnot( length(names_seq) == length(names_db) )
 
@@ -66,7 +69,7 @@ blastn <- function(names_seq,names_db,
   }else{
    if(verbose) cat(paste("\t",names_seq[i],".\n",sep=""))
    cmd <- paste("blastn -query ",names_seq[i]," -db ",names_db[i], " -out ",
-                gsub("_stripped.db","_closest.txt",names_db[i]),
+                gsub(".db","_closest.txt",names_db[i]),
                 " -max_target_seqs ",nbre_close," -outfmt 6",sep="")
    system(command=cmd,ignore.stdout=F,ignore.stderr=F )
   }
@@ -77,7 +80,7 @@ blastn <- function(names_seq,names_db,
 #' @description Script for:
 #' @return dqsfds
 #' @param LANL_seq XXXX
-#' @param seq XXXX
+#' @param Local_seq XXXX
 #' @param path_output XXXX
 #' @param output_names XXXX
 #' @param max_closest XXXX
@@ -87,7 +90,7 @@ blastn <- function(names_seq,names_db,
 #' @param index XXXX
 #' @param verbose XXXX
 #' @export
-get_closest_seq <- function(LANL_seq,seq,
+get_closest_seq <- function(LANL_seq,Local_seq,
                             path_output,output_names,
                             max_closest,
                             nbre_close=NULL,
@@ -95,11 +98,13 @@ get_closest_seq <- function(LANL_seq,seq,
                             name_HXB2_file=NULL,
                             index=NA,
                             verbose=TRUE){
- LANL_seq <- gsub(x=LANL_seq,
-                  pattern="_stripped.fasta",
-                  replacement=".fasta")
+ if(index == "NA") index <- NA
 
- if(verbose) cat("Get the closest LANL sequences and merge them with the new sequences.\n")
+ # LANL_seq <- gsub(x=LANL_seq,
+ #                  pattern="_stripped.fasta",
+ #                  replacement=".fasta")
+
+ if(verbose) cat("Get the closest LANL sequences and merge them with the local sequences.\n")
  prop <- NULL
  nbre_close_res <- NULL
 
@@ -152,7 +157,7 @@ get_closest_seq <- function(LANL_seq,seq,
 
   ### Increase the number of closest sequences if there is not enough LANL sequences
   closest_LANL <- ape::read.dna(name_tmp,format="fa")
-  new_seq      <- ape::read.dna(seq[i],format="fa")
+  new_seq      <- ape::read.dna(Local_seq[i],format="fa")
   tmp <- round(nrow(closest_LANL) / (length(new_seq)+nrow(closest_LANL)) * 100,2)
   if(!is.null(nbre_close)){
    if(tmp < min_percent){
@@ -203,7 +208,7 @@ get_closest_seq <- function(LANL_seq,seq,
 
   # name_result <- paste(path_output,prefixe_newseq,"_",basename(name),sep="")
   name_result <- paste(path_output,output_names[i],".fasta",sep="")
-  cmd <- paste("cat ",name_tmp," ",seq," > ",name_result,sep="")
+  cmd <- paste("cat ",name_tmp," ",Local_seq[i]," > ",name_result,sep="")
   system(cmd)
 
   # Save the LANL sequences proportion
@@ -230,6 +235,8 @@ add_outgroup <- function(subtypes,
                          outgroup_size = 5,
                          index=NA,
                          verbose=TRUE){
+ if(index == "NA") index <- NA
+
  if(verbose) cat("Add outgroups to each sequence files.\n")
 
  load(system.file(package="phyloHIV","extdata","nucl_div.rda"))
@@ -319,6 +326,8 @@ align_seq <- function(names_file,
                       index=NA,
                       verbose=TRUE
 ){
+ if(index == "NA") index <- NA
+
  if(verbose) cat("Align the sequences with ",aligner,".\n",sep="")
  path_fasta_splitter <- system.file(package="phyloHIV","ext","fasta-splitter.pl")
 
@@ -421,6 +430,7 @@ find_identical_sequences <- function(names_file_aligned,path_sequences_meta,
                                      dna_region,
                                      index=NA,
                                      verbose=TRUE){
+ if(index == "NA") index <- NA
 
  ### Which files ?
  if(is.na(index)){
@@ -454,7 +464,7 @@ find_identical_sequences <- function(names_file_aligned,path_sequences_meta,
   progress <- data.table::data.table( iter=floor(seq(1,nrow(seq)-1,le=11)) ,
                                       percent=seq(0,100,le=11) )
   for(i in 1:(nrow(seq)-1)){
-   if(verbose & i %in% progress$iter ) cat("\t\t",progress[progress$iter==i,"percent"],"%\n")
+   if(verbose & i %in% progress$iter ) cat("\t\t",progress[progress$iter==i,"percent"][[1]],"%\n")
    for(j in (i+1):nrow(seq)){
     if(sum(as.vector(seq[i,]) != as.vector(seq[j,])) == 0)
      index_dna <- rbind(index_dna,c(i,j))
@@ -491,6 +501,8 @@ find_identical_sequences <- function(names_file_aligned,path_sequences_meta,
 rm_DRM <- function(names_file_aligned,name_HXB2,
                    index=NA,
                    verbose=TRUE){
+ if(index == "NA") index <- NA
+
  ### Which files ?
  if(is.na(index)){
   index <- 1:length(names_file_aligned)

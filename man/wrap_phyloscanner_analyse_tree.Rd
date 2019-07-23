@@ -4,12 +4,12 @@
 \alias{wrap_phyloscanner_analyse_tree}
 \title{wrap_phyloscanner_analyse_tree}
 \usage{
-wrap_phyloscanner_analyse_tree(tree_names, path_output,
+wrap_phyloscanner_analyse_tree(renamed_tree_names, path_output,
   opt_regex = "([[:alpha:]]+)___.*", bs.n = 50, bs.id = NA,
   verbose = TRUE)
 }
 \arguments{
-\item{tree_names}{XXXX}
+\item{renamed_tree_names}{XXXX}
 
 \item{path_output}{XXXX}
 

@@ -5,9 +5,9 @@ require(rjson)
 require(phyloHIV)
 require(big.phylo)
 
-# args <- c("inst/clades_options.json")
-
-args = commandArgs(trailingOnly=TRUE)
+# args <- commandArgs(trailingOnly=TRUE)
+# args <- c("./extjson/options.json")
+args <- c("./json/options.json")
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -17,19 +17,13 @@ if(length(args)>0){
  }
 }
 
-if(length(args) > 1){
- index <- as.numeric(args[2])
-}else{
- index <- NA
-}
-
 ########################################################################### ----
 ##################### Initialization ###########################################
 ########################################################################### ----
 package_name <- "phyloHIV"
 
 ### Load internal options ----
-json_data <- fromJSON(file=system.file(package=package_name,"internal_options.json"))
+json_data <- fromJSON(file=system.file(package=package_name,"extjson","internal_options.json"))
 for(i in 1:length(json_data)){
  assign(names(json_data)[i], json_data[[i]])
 }
@@ -37,17 +31,17 @@ for(i in 1:length(json_data)){
 ### Which file to treat ----
 all_file_bs <- expand.grid(tree_names,1:bs.n)
 names(all_file_bs) <- c("tree_names","bs.id")
-all_file_bs$tree_names <- paste(path_tree,tree_builder,"_",
+all_file_bs$tree_names <- paste(normalizePath(path_tree),"/",tree_builder,"_",
                                 all_file_bs$tree_names,"/",all_file_bs$tree_names,
                                 "_rerooted.newick",sep="")
 all_file_bs$renamed_tree_names <- gsub(x=all_file_bs$tree_names,
                                        pattern=".newick",
                                        replacement="_renamed.newick")
 
-if(!is.na(index)){
- tree_names <- as.character(all_file_bs$tree_names[index])
- bs.id <- as.numeric(all_file_bs$bs.id[index])
- renamed_tree_names <- as.character(all_file_bs$renamed_tree_names[index])
+if(!is.na(job_index) && job_index != "NA"){
+ tree_names <- as.character(all_file_bs$tree_names[job_index])
+ bs.id <- as.numeric(all_file_bs$bs.id[job_index])
+ renamed_tree_names <- as.character(all_file_bs$renamed_tree_names[job_index])
 }else{
  tree_names <- unique(as.character(all_file_bs$tree_names))
  bs.id <- NA
@@ -55,6 +49,7 @@ if(!is.na(index)){
 }
 
 ### Load and define objects ----
+path_RDS <- paste(normalizePath(path_RDS),"/",sep="")
 sequences_meta <- data.table(readRDS(file.path(path_RDS,RDS_names[1])))
 person         <- data.table(readRDS(file.path(path_RDS,RDS_names[2])))
 Country_db     <- readRDS(file.path(path_RDS,RDS_names[3]))
@@ -90,11 +85,12 @@ wrap_phyloscanner_analyse_tree(renamed_tree_names,path_colored_tree,
                                opt_regex=opt_regex,
                                bs.n = bs.n,bs.id = bs.id,
                                verbose =verbose)
+path_colored_tree <- paste(normalizePath(path_colored_tree),"/",sep="")
 
 ### Phyloscanner postprocess ----
 if(!is.null(focus_subgroup)) focus_group <- paste(focus_group,focus_subgroup,sep="")
 phyloscanner_postprocess(renamed_tree_names,path_colored_tree,
-                         focus_group=focus_group,
+                         focus_group=focus_group,separator=separator,
                          bs.n = bs.n,bs.id = bs.id,
                          verbose =verbose)
 
@@ -102,7 +98,7 @@ phyloscanner_postprocess(renamed_tree_names,path_colored_tree,
 ##################### Extract the clades ######################################
 ########################################################################### ----
 ### Clades extracting for each bootstrap index ----
-clades_extracting( unique(as.character(all_file_bs$renamed_tree_names)),
+clades_extracting(renamed_tree_names,
                   path_colored_tree,path_clades,
                   focus_group,
                   bs.n=bs.n,bs.id=bs.id,

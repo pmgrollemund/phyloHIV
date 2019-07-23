@@ -4,11 +4,11 @@
 \alias{clades_extracting}
 \title{clades_extracting}
 \usage{
-clades_extracting(tree_names, path_colored_tree, path_output, focus_group,
-  bs.n = 50, bs.id = NA, verbose = T)
+clades_extracting(renamed_tree_names, path_colored_tree, path_output,
+  focus_group, bs.n = 50, bs.id = NA, verbose = T)
 }
 \arguments{
-\item{tree_names}{XXXX}
+\item{renamed_tree_names}{XXXX}
 
 \item{path_colored_tree}{XXXX}
 

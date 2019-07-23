@@ -4,11 +4,11 @@
 \alias{phyloscanner_postprocess}
 \title{phyloscanner_postprocess}
 \usage{
-phyloscanner_postprocess(tree_names, path_output, focus_group, bs.n = 50,
-  bs.id = NA, verbose = TRUE)
+phyloscanner_postprocess(renamed_tree_names, path_output, focus_group,
+  bs.n = 50, bs.id = NA, verbose = TRUE)
 }
 \arguments{
-\item{tree_names}{XXXX}
+\item{renamed_tree_names}{XXXX}
 
 \item{path_output}{XXXX}
 
