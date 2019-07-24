@@ -38,6 +38,11 @@
 
  "local_group": "WA",
  "focus_group": "KC",
+
+ "focus_subgroup": null,
+ "index_subgroup": null,
+ "name_subgroup": null,
+
  "bs.n": 2,
  "subtypes": ["01_AE","A1"],
  "verbose": true

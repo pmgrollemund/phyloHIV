@@ -5,9 +5,7 @@ require(rjson)
 require(phyloHIV)
 require(big.phylo)
 
-# args <- commandArgs(trailingOnly=TRUE)
-# args <- c("./extjson/options.json")
-args <- c("./json/options.json")
+args <- commandArgs(trailingOnly=TRUE)
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -57,6 +55,7 @@ Country_db     <- readRDS(file.path(path_RDS,RDS_names[3]))
 ########################################################################### ----
 ##################### Reconstruct the ancestral states #########################
 ########################################################################### ----
+#- Begin relabelling -#
 ### Relabelling ----
 tips_relabelling(tree_names,
                  person,sequences_meta,Country_db,
@@ -79,27 +78,34 @@ tips_relabelling(tree_names,
                  external_index_location=external_index_location,
                  bs.n=bs.n,bs.id=bs.id,
                  verbose =verbose)
+#- End relabelling -#
 
+#- Begin phyloscanner -#
 ### Phyloscanner ----
 wrap_phyloscanner_analyse_tree(renamed_tree_names,path_colored_tree,
                                opt_regex=opt_regex,
                                bs.n = bs.n,bs.id = bs.id,
                                verbose =verbose)
+#- End phyloscanner -#
 path_colored_tree <- paste(normalizePath(path_colored_tree),"/",sep="")
 
+#- Begin postprocess_phyloscanner -#
 ### Phyloscanner postprocess ----
 if(!is.null(focus_subgroup)) focus_group <- paste(focus_group,focus_subgroup,sep="")
 phyloscanner_postprocess(renamed_tree_names,path_colored_tree,
                          focus_group=focus_group,separator=separator,
                          bs.n = bs.n,bs.id = bs.id,
                          verbose =verbose)
+#- End postprocess_phyloscanner -#
 
 ########################################################################### ----
 ##################### Extract the clades ######################################
 ########################################################################### ----
+#- Begin extract_clades -#
 ### Clades extracting for each bootstrap index ----
 clades_extracting(renamed_tree_names,
                   path_colored_tree,path_clades,
                   focus_group,
                   bs.n=bs.n,bs.id=bs.id,
                   verbose=verbose)
+#- End extract_clades -#

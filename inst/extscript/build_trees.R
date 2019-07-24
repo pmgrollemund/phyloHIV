@@ -5,9 +5,7 @@ require(rjson)
 require(phyloHIV)
 require(big.phylo)
 
-# args <- commandArgs(trailingOnly=TRUE)
-# args <- c("./extjson/options.json")
-args <- c("./json/options.json")
+args <- commandArgs(trailingOnly=TRUE)
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -46,13 +44,16 @@ if(!is.na(job_index) && job_index != "NA"){
 ########################################################################### ----
 ##################### Build the trees ##########################################
 ########################################################################### ----
+#- Begin build_tree -#
 ### Building trees ----
 building_tree(names_file_aligned_ndrm,path_tree,
               tree_builder,
               bs.n,bs.id,
               verbose)
 path_tree <- paste(normalizePath(path_tree),"/",sep="")
+#- End build_tree -#
 
+#- Begin postprocess_tree -#
 ### Postprocess trees (rooting and remove outgroup sequences) ----
 tree_names <-
  paste(path_tree,"fasttree_",gsub(x=basename(names_file_aligned_ndrm),".fasta","/"),
@@ -61,3 +62,4 @@ tree_names <-
 postprocess_tree(tree_names,path_outgroup,name_HXB2,
                  bs.n,bs.id,
                  verbose)
+#- End postprocess_tree -#

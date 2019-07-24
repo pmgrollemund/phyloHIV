@@ -5,9 +5,7 @@ require(rjson)
 require(phyloHIV)
 require(big.phylo)
 
-# args <- commandArgs(trailingOnly=TRUE)
-# args <- c("./extjson/options.json")
-args <- c("./json/options.json")
+args <- commandArgs(trailingOnly=TRUE)
 if(length(args)>0){
  json_file <- args[1]
  json_data <- fromJSON(file=json_file)
@@ -44,6 +42,7 @@ name_HXB2_file <- system.file(package=package_name,"extdata","LANL","HXB2.fasta"
 ##################### Get the closest sequences ################################
 ########################################################################### ----
 
+#- Begin blast -#
 ### Make a blast database ----
 makeblastdb(LANL_seq,LANL_db,
             job_index,verbose)
@@ -69,7 +68,9 @@ blastn(Local_seq,LANL_db,max_closest,
 #     -db: the blast database
 #     -out: the name of the output
 #     -max_target_seqs: the number of closest sequences to find in the database for each studied sequence
+#- End blast -#
 
+#- Begin get_closest_seq -#
 ### Get closest sequences ----
 closest_result <- get_closest_seq(LANL_seq,Local_seq,
                                   path_aligned,seq_names,
@@ -84,6 +85,16 @@ if(is.na(job_index) || job_index == "NA"){
  save(closest_result,file=paste(path_aligned,"Closest_result_",job_index,".rda",sep=""))
 }
 
+### Check that HXB2 is in each file  ----
+names_file <- paste(path_aligned,seq_names,".fasta",sep="")
+check_HXB2(names_file,name_HXB2_file,
+           job_index,verbose)
+#- End get_closest_seq -#
+
+########################################################################### ----
+##################### Align the sequences ######################################
+########################################################################### ----
+#- Begin align -#
 ### Add an outgroup sequences from the closest subtype ----
 outgroup <- add_outgroup(subtypes,
                          path_aligned,LANL_seq,seq_names,
@@ -95,14 +106,7 @@ if(is.na(job_index) || job_index == "NA"){
  save(outgroup,file=paste(path_aligned,"outgroup_",job_index,".rda",sep=""))
 }
 
-### Check that HXB2 is in each file  ----
-names_file <- paste(path_aligned,seq_names,".fasta",sep="")
-check_HXB2(names_file,name_HXB2_file,
-           job_index,verbose)
 
-########################################################################### ----
-##################### Align the sequences ######################################
-########################################################################### ----
 ### Align ----
 align_seq(names_file,aligner,thread,
           job_index,verbose)
@@ -114,7 +118,9 @@ align_seq(names_file,aligner,thread,
 #     --auto : to get the defaut options in terms of speed and accuracy
 #     --thread: number of threads (parallele running)
 #     -add : to merge the output to a given file
+#- End align -#
 
+#- Begin postprocess_align_gaps -#
 ### Remove some gaps column ----
 names_file_aligned <- gsub(x=names_file,".fasta",paste("_",aligner,"_aligned.fasta",sep=""))
 
@@ -123,6 +129,7 @@ for(name in names_file_aligned){
  seq	<- seq.strip.gap(seq, strip.pc=1-nbre_col_rm_strip/nrow(seq))
  write.dna(seq,name,format='fasta',colsep='', nbcol=-1)
 }
+#- End postprocess_align_gaps -#
 ### Remove more columns ----
 # for(name in names_file_aligned[4]){
 #  seq <- read.dna(name,format="fa")
@@ -130,16 +137,20 @@ for(name in names_file_aligned){
 #  write.dna(seq,name,format='fasta',colsep='', nbcol=-1)
 # }
 
+#- Begin postprocess_align_identical -#
 ### Remove the identical sequences ----
 indexes <- find_identical_sequences(names_file_aligned,path_sequences_meta,
                                     dna_region,
                                     job_index,verbose)
-if(is.na(job_index)){
+if(is.na(job_index) || job_index == "NA"){
  save(indexes,file=paste(path_aligned,"indexes_identical.rda",sep=""))
 }else{
  save(indexes,file=paste(path_aligned,"indexes_identical_",job_index,".rda",sep=""))
 }
+#- End postprocess_align_identical -#
 
-# ### Remove Drug Resistance Mutations ----
+#- Begin postprocess_align_DRM -#
+### Remove Drug Resistance Mutations ----
 rm_DRM(names_file_aligned,name_HXB2,
        job_index,verbose)
+#- End postprocess_align_DRM -#

@@ -556,8 +556,9 @@ seq_rm_drugresistance2 <- function(seq, outfile=NA,name_HXB2) #="B.FR.1983.HXB2-
  load(system.file(package="big.phylo", 'AC_drugresistance_201508.rda'))
  load(system.file(package="big.phylo", 'refseq_hiv1_hxb2.rda'))
 
- index_HXB2.K03455 <- which(names(hxb2) == "HXB2.K03455")
- hxb2			  <- paste(hxb2[, index_HXB2.K03455], collapse='')
+ index_HXB2.K03455 <- which(names(hxb2) == "HXB2.K03455") # PMG 21/07/19
+ hxb2 <- as.data.frame(hxb2) # PMG 21/07/19
+ hxb2	<- paste(hxb2[, index_HXB2.K03455], collapse='') # PMG 21/07/19
  if(is.list(seq)){
   seq.hxb2	<- paste(as.character(seq[index_HXB2]),collapse='')
  }else{
@@ -576,12 +577,19 @@ seq_rm_drugresistance2 <- function(seq, outfile=NA,name_HXB2) #="B.FR.1983.HXB2-
  #	find coordinates of real HXB2 in alignment
  seq.hxb2.pos	<- c()
  tmp				<- gregexpr('-+',seq.hxb2)[[1]]
- if(tmp[1]>-1)
- {
-  seq.hxb2.pos <- data.table::data.table(GP_ST = as.integer(tmp),
-                             GP_LEN = attr(tmp,'match.length'))
-  seq.hxb2.pos <- seq.hxb2.pos[, list(GP_POS = seq.int(GP_ST, length.out = GP_LEN)),
-                               by='GP_ST'][, GP_POS]
+ if(length(tmp) >0){ # PMG 21/07/19
+  if(tmp[1]>-1)
+  {
+   # seq.hxb2.pos <- data.table::data.table(GP_ST = as.integer(tmp),
+   #                                        GP_LEN = attr(tmp,'match.length'))
+   # seq.hxb2.pos <- seq.hxb2.pos[, list(GP_POS = seq.int(GP_ST, length.out = GP_LEN)),
+   #                              by='GP_ST'][, GP_POS]
+   # Does not work when including in phyloHIV package, I do not know why. Replace
+   # by the following lines.
+   seq.hxb2.pos <- data.frame(GP_ST = as.integer(tmp),
+                              GP_LEN = attr(tmp,'match.length'))
+   seq.hxb2.pos <- apply(seq.hxb2.pos,1,function(v) seq.int(v[1],length.out=v[2]))
+  }
  }
 
  seq.hxb2.pos 	<- data.table::data.table(HXB2INSEQ_POS = setdiff(seq_len(nchar(seq.hxb2)),

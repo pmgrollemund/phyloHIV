@@ -1,0 +1,100 @@
+---
+title: "Understand and generate an option json file"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{phyloHIV_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+options(width = 100)
+knitr::opts_chunk$set(echo = TRUE, dev = c('png','pdf'), fig.width= 12, 
+                      fig.height=8,
+                      collapse = TRUE,
+                      comment = "#>"
+)
+```
+
+# Introduction
+
+### Purpose of the document
+In this document, we describe the options json file that are required for running 
+the example package application in `extscript`.
+Below, we firstly deal with `options.json` file and we secondly describe 
+`internal_options.json` file that should not be changed.
+
+# options
+The json file should contain inputs such that: 
+
+* `job_index`: an integer that should only corresponds to the array job index, NA otherwise.
+* `path_RDS`: path to the folder containing the meta data.
+* `RDS_names`: the name of the meta data files.
+* `path_LANL_seq`: path to the folder containing the LANL sequences.
+* `LANL_seq_names`: the names of the LANL files.
+* `path_local_seq`: path to the folder containing the local sequences.
+* `local_seq_names`: the names of the local files.
+* `path_aligned`: where to store files related to the aligned sequences. 
+* `seq_names`: the names of the sequence files that will contain the local sequences
+and the blasted LANL sequences.
+* `path_tree`: where to store files related to the trees. 
+* `tree_names`: the names of the trees
+* `path_colored_tree`: where to store files related to the colored trees, as 
+phyloscanner outputs.
+* `path_clades`: where to store files related to the extracted subtrees/clades. 
+* `local_group`: the group name of the local sequences. For instance: "WA" if
+all of them are from Washington State.
+* `focus_group`: which geographical location to focus. For instance: "KC" if 
+King County is the focus.
+* `focus_subgroup:` which subgroup to focus. Could be level(s) of a variable in the 
+meta data file. See also "vars_for_label" if you aim to focus on a specific 
+subgroup. For instance: ["HSX_F","HSX_M"].
+* `index_subgroup`: the rank of the considered variable (for focus_subgroup) in 
+the tip labels. (This option is tricky to define...).
+* `name_subgroup`: a name for defining the subgroup. For instance: "HSX".
+* `bs.n`: the bootstrap number. 
+* `subtypes`: the considered subtype. 
+* `verbose`: write stuff if true. 
+
+You may use the `write_option_file` function to generate this options json file.
+See below to generate the same file than which provided as an example.
+```{r, echo=TRUE,eval=FALSE}
+write_option_file(output_file = "./options.json")
+```
+
+# internal options
+The json file should contain inputs such that: 
+
+* `nbre_close`: the minimum number of closest LANL sequences from each local 
+sequences.
+* `max_closest`: the maximum number of closest LANL sequences from each local 
+sequences.
+* `min_percent`: the threshold under which we consider that there are not enough 
+LANL sequences.
+* `outgroup_size`: the size of the ougroup added to each sequence files.
+* `aligner`: the algorithm to use to align the sequence. Keep MAFFT.
+* `thread`: MAFFT option.
+* `dna_region`: the name of the focused genome region.
+* `nbre_col_rm_strip`: the genome location with only `n` non-gap, where `n` is lower
+than `nbre_col_rm_strip` will be removed.
+* `name_HXB2`: the name of the HXB2 sequence. 
+* `tree_builder`: the algorithm to use to build the tree. Keep fasttree.
+* `local_indicator`: the prefix of the local sequence names.
+* `focus_indicator`: if true, the subtree will be estimated for a specific group.
+* `separator`: a string that will be use to separate the tip name from the group
+name.
+* `negative`: a string for indicating that a tip is not in the focused subgroup.
+* `blacklist_paths`: where to store the blacklist files.
+* `blacklist_names`: the names of the blacklist files.
+* `Unknown`: which group name for those we we do not have an estimated location.
+* `local_tip_split`: the string used to separate the information in the local tip
+names.
+* `external_tip_split`: the string used to separate the information in the 
+external/LANL tip names.
+* `local_index_location`: the spot of the location in the local tip names.
+* `external_index_location`: the spot of the location in the external/LANL tip names.
+* `opt_regex`: a regular expression used by phyloscanner. Depends on `separator`.
+* `vars_for_label`: the variables in the meta data that should appear in the local
+tip names. If you put too much information, you should have a problem to open the 
+newick/fasta file.

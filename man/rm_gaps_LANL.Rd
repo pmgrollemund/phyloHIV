@@ -8,7 +8,13 @@ rm_gaps_LANL(LANL_seq, code.from = "-", code.to = "n",
   verbose = TRUE)
 }
 \arguments{
-\item{XXX}{XXXX}
+\item{LANL_seq}{XXXX}
+
+\item{code.from}{XXXX}
+
+\item{code.to}{XXXX}
+
+\item{verbose}{XXXX}
 }
 \description{
 Script for:

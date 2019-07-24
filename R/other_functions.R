@@ -100,7 +100,7 @@ write_qsub <- function(Rscript,options_file=NA,
                        hpc.nproc=1,hpc.load=big.phylo:::HPC.CX1.IMPERIAL.LOAD,
                        hpc.array=NA,
                        log=TRUE,multiple_log=TRUE
-                       ){
+){
  # Reference time
  time_tmp <- format(Sys.time(),"%y-%m-%d-%H-%M-%S")
 
@@ -157,6 +157,9 @@ write_qsub <- function(Rscript,options_file=NA,
 #' @param path_clades XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
 #' @param local_group XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
 #' @param focus_group XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+#' @param focus_subgroup XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+#' @param index_subgroup XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+#' @param name_subgroup XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
 #' @param bs.n XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
 #' @param subtypes XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
 #' @param job_index XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
@@ -178,11 +181,14 @@ write_option_file <- function(output_file = "./options.json",
                                                    "newseq_LANL_Subtype_A1"),
                               path_tree="./extdata/Tree/",
                               tree_names=c("newseq_LANL_Subtype_01_AE_mafft_aligned_ndrm",
-                                          "newseq_LANL_Subtype_A1_mafft_aligned_ndrm"),
+                                           "newseq_LANL_Subtype_A1_mafft_aligned_ndrm"),
                               path_colored_tree="./extdata/Colored_tree/",
                               path_clades="./extdata/Clades/",
                               local_group="WA",
                               focus_group="KC",
+                              focus_subgroup="null",
+                              index_subgroup="null",
+                              name_subgroup="null",
                               bs.n=2,
                               subtypes=c("01_AE","A1"),
                               job_index=NA,
@@ -219,6 +225,9 @@ write_option_file <- function(output_file = "./options.json",
 
  txt <- paste(txt,'"local_group": "',local_group,'",\n',sep='')
  txt <- paste(txt,'"focus_group": "',focus_group,'",\n',sep='')
+ txt <- paste(txt,'"focus_subgroup": "',focus_subgroup,'",\n',sep='')
+ txt <- paste(txt,'"index_subgroup": "',index_subgroup,'",\n',sep='')
+ txt <- paste(txt,'"name_subgroup": "',name_subgroup,'",\n',sep='')
  txt <- paste(txt,'"bs.n": ',bs.n,',\n',sep='')
  txt <- paste(txt,'"subtypes": ["',
               paste(subtypes,collapse='","')

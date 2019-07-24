@@ -34,11 +34,8 @@
                     "kc_case",
                     "main_race",
                     "main_birthCountry",
-                    "main_transm",
+                    "main_transm2",
                     "sex",
                     "hivyr"
-                    ],
-  "focus_subgroup": null,
-  "index_subgroup": null,
-  "name_subgroup": null
+                    ]
 }

@@ -5,7 +5,7 @@
 \title{phyloscanner_postprocess}
 \usage{
 phyloscanner_postprocess(renamed_tree_names, path_output, focus_group,
-  bs.n = 50, bs.id = NA, verbose = TRUE)
+  separator, bs.n = 50, bs.id = NA, verbose = TRUE)
 }
 \arguments{
 \item{renamed_tree_names}{XXXX}
@@ -13,6 +13,8 @@ phyloscanner_postprocess(renamed_tree_names, path_output, focus_group,
 \item{path_output}{XXXX}
 
 \item{focus_group}{XXXX}
+
+\item{separator}{XXXX}
 
 \item{bs.n}{XXXX}
 

@@ -18,8 +18,9 @@ write_option_file(output_file = "./options.json",
   "newseq_LANL_Subtype_A1_mafft_aligned_ndrm"),
   path_colored_tree = "./extdata/Colored_tree/",
   path_clades = "./extdata/Clades/", local_group = "WA",
-  focus_group = "KC", bs.n = 2, subtypes = c("01_AE", "A1"),
-  job_index = NA, verbose = "true")
+  focus_group = "KC", focus_subgroup = "null",
+  index_subgroup = "null", name_subgroup = "null", bs.n = 2,
+  subtypes = c("01_AE", "A1"), job_index = NA, verbose = "true")
 }
 \arguments{
 \item{output_file}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
@@ -51,6 +52,12 @@ write_option_file(output_file = "./options.json",
 \item{local_group}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
 
 \item{focus_group}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
+
+\item{focus_subgroup}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
+
+\item{index_subgroup}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
+
+\item{name_subgroup}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
 
 \item{bs.n}{XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx}
 

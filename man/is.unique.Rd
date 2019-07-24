@@ -7,7 +7,7 @@
 is.unique(v)
 }
 \arguments{
-\item{XXX}{XXXX}
+\item{v}{XXXX}
 }
 \description{
 Script for:
