@@ -1,0 +1,43 @@
+---
+title: "Run an example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{phyloHIV_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+options(width = 100)
+knitr::opts_chunk$set(echo = TRUE, dev = c('png','pdf'), fig.width= 12, 
+                      fig.height=8,
+                      collapse = TRUE,
+                      comment = "#>"
+)
+```
+
+### Purpose of the document
+In this document, we describe how to run an example from genomic sequences
+to transmission chains. 
+The example input are in the package folder.
+
+For what follows, you should open a terminal session and change the directory 
+to the package folder.
+
+### Blast and align the sequences
+Run the following terminal command: 
+```{bash, echo = TRUE,eval=FALSE}
+cd inst 
+Rscript extscript/align_sequences.R extjson/options.json
+```
+
+### Build the trees
+Run the following terminal command: 
+```{bash, echo = TRUE,eval=FALSE}
+Rscript extscript/build_trees.R extjson/options.json
+```
+### Ancestral state reconstruction and extract subtrees
+Run the following terminal command: 
+```{bash, echo = TRUE,eval=FALSE}
+Rscript extscript/Ancestral_state_to_clades.R extjson/options.json
+```
