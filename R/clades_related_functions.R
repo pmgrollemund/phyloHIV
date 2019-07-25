@@ -529,7 +529,7 @@ wrap_extract.clades <- function(tree,traits,MRCAs,focus_group)
     if(length(non_focus_tips) > 0){
      oldw <- getOption("warn")
      options(warn=-1)
-     clade_tmp <- drop.tip(clade_tmp,tip=non_focus_tips,)
+     clade_tmp <- drop.tip(clade_tmp,tip=non_focus_tips)
      options(warn=oldw)
     }
 
